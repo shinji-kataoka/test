@@ -1,0 +1,99 @@
+\chapter{定理1の証明に用いる補題}
+
+\begin{sub}
+\label{Z_bound}
+% \cite[Corollary5.35]{ITTN}
+\cite{ITTN}
+$Z$を各要素が$\mathcal{N}(0, \sigma_z^2)$に従う$N \times m$の行列とする．このとき，任意の$\delta \in(0, 1)$について$1-\delta$以上の確率で
+\begin{equation*}
+    \|Z\| \leq \sigma_z(\sqrt{N} + \sqrt{m} + \sqrt{\log{1/  \delta}} )
+\end{equation*}
+が成り立つ．
+\end{sub}
+
+\begin{sub}
+\label{W_bound}
+% \cite[Lemma7.7]{AITM}
+\cite{AITM}
+各行列の次元が$d_1 \times d_2$である複素行列の$n$個の有限列$\{B_k\}, k=1, 2, \ldots, n$を考える．
+また$\{\gamma_k\}$を標準正規分布に従う有限列であるとする．
+このとき，$Z = \sum_k \gamma_k B_k$とする．
+$Z$の分散に関する統計量を
+\begin{align*}
+    v(Z) &= \max \{ \|\mathbb{E}(ZZ^*)\| , \| \mathbb{E}(ZZ^*) \|\} \\
+    &= \max \{ \| \sum_{k=1}^{n} B_kB_k^* \| , \| \sum_{k=1}^{n} B_kB_k^* \|\}
+\end{align*}
+とする．このとき，任意の$t \geq 0$について，
+\begin{equation*}
+    \mathbb{P}\{ \|Z\| \geq t\} \leq \left(d_1 + d_2 \exp{\left( \frac{-t^2}{2v(z)} \right)} \right)
+\end{equation*}
+が成り立つ．
+\end{sub}
+
+\begin{sub}
+\label{chi^2_bound}
+% \cite[Example2.11]{HDSA}
+\cite{HDSA}
+$z_k \sim \mathcal{N}(0, 1)$に従う独立な変数であるとき，$Y = \sum_{k=1}^{n}z_k^2$は自由度$n$の$\chi$二乗分布に従う．このとき，
+\begin{equation*}
+    \mathbb{P}\left[\left|\frac{Y}{n} -1 \right| \geq t \right] \leq 2e^{-nt^2/8}
+\end{equation*}
+が成り立つ．
+\end{sub}
+
+\chapter{Sub-Gaussian性をもつ確率変数の性質}
+% 以下の内容は文献\cite{HDSA}を参照した．
+ここでは本論文で用いるSub-Gaussianの基本的性質をまとめる．
+
+\begin{deff}
+    平均が$\mathbb{E}[X] = \mu$である確率変数$X$は，ある正の数$\sigma$が存在し，任意の$\lambda\in \mathbb{R}$について，
+    \begin{equation*}
+        \mathbb{E}[e^{\lambda(X-\mu)}] \leq e^{\frac{\sigma^2 \lambda^2}{2}}
+    \end{equation*}
+    が成り立つとき，$X$はパラメータ$\sigma$の$\mathrm{sub-Gaussian}$であるという．
+\end{deff}
+
+
+\begin{ex}
+\label{rad_ex}
+$\{-a, +a\}$を等確率でとる確率変数を$\epsilon$とする．このとき，
+\begin{align}
+    \mathbb{E}[e^{\lambda\epsilon}] &= \frac{1}{2}\{e^{-a\lambda} + e^{a\lambda}\} \notag \\
+    &=\frac{1}{2} \left\{ \sum_{k = 0}^{\infty}\frac{(-a\lambda)^k}{k!} + \sum_{k = 0}^{\infty}\frac{(a\lambda)^k}{k!} \right\} \notag \\
+    &= \sum_{k = 0}^{\infty}\frac{(a\lambda)^{2k}}{(2k)!} \notag \\
+    \label{rademacher}
+    &\leq e^{a^2\lambda^2/2}
+\end{align}
+であるから，確率変数$\epsilon$はパラメータ$a$の$\mathrm{sub-Gaussian}$である．
+\end{ex}
+
+\begin{ex}
+一般に，有界区間$[a, b]$にのみ値をとる$\mathbb{E}[X] = 0$である確率変数$X$について，$X'$を$X$と同じ分布に従う独立な別の確率変数であるとする．
+$\mathbb{E}[X'] = 0$，凸関数$f(x) = e^x$に対して，$\mathrm{Jensen}$の不等式$(f(\mathbb{E}[X]) \leq \mathbb{E}[f(X)])$\cite{IAJI}を適用すると，
+\begin{equation*}
+    \mathbb{E}[e^{\lambda X}] = \mathbb{E}_X[e^{\lambda(X-\mathbb{E}_{X'}[X'])}] \leq \mathbb{E}_{X, X'}[e^{\lambda (X-X')}]
+\end{equation*}
+が成り立つ．さらに，$\{-1, +1\}$を等確率でとる確率変数を$\epsilon$として導入すると，
+\begin{align*}
+    \mathbb{E}_{\epsilon}[e^{\lambda \epsilon (X-X')}] &= \frac{1}{2}e^{\lambda(X-X')}+\frac{1}{2}e^{-\lambda(X-X')} \\
+    &= e^{\lambda (X-X')} 
+\end{align*}
+が成り立つ．
+$X, X'$は，同じ分布に従う独立な変数であるため，$X-X'$, $X'-X$を新たな確率変数と置くと同じ分布に従うからである．また，\eqref{rademacher}式において，$\lambda \to \lambda(X-X')$とすると
+\begin{equation*}
+    \mathbb{E}_{\epsilon}[e^{\lambda \epsilon (X-X')}] \leq \mathbb{E}_{X, X'}[e^{\lambda^2 (X-X')^2/2}]
+\end{equation*}
+が成り立つ．$X, X'\in [a, b]$であるから，$|X-X'|\leq |b-a|$であるので，．
+\begin{align*}
+    \mathbb{E}[e^{\lambda X}] &\leq \mathbb{E}_{X, X'}[e^{\lambda^2 (X-X')^2/2}] \\
+    &\leq e^{\lambda^2 (b-a)^2/2}
+\end{align*}
+が成り立つ．
+したがって，$X$は少なくともパラメータ$b-a$の$\mathrm{sub-Gaussian}$である．
+\end{ex}
+
+sub-Gaussian性は，正規分布と同様の集中不等式を適用できるため期待値周辺の集中性やサンプル数と精度の関係を評価する際に広く利用される．
+
+
+
+

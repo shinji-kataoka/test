@@ -1,0 +1,219 @@
+\section{問題設定}
+以下の離散時間線形時不変システム
+\begin{align}
+    \label{state1}
+    x_{t+1} &= Ax_t + Bu_t + w_t \\
+    \label{output1}
+    y_t &= Cx_t + Du_t + z_t
+\end{align}
+を考える．ただし，
+$x_t \in \mathbb{R}^n，u_t \in \mathbb{R}^p，y_t \in \mathbb{R}^m$はそれぞれ時刻$t$におけるシステムの状態，入力，出力を表す．また，$w_t \in \mathbb{R}^n，z_t \in \mathbb{R}^m$はプロセスノイズおよび観測ノイズを表し，$w_t \sim \mathcal{N}(0, \sigma_w^2I), z_t \sim \mathcal{N}(0, \sigma_z^2I)$である．
+初期状態$x_1 = 0$であり，$\rho(A) \leq \eta <1$を仮定する．ここで，$\rho(\cdot)$は行列の最大固有値の絶対値を表す．
+
+本章では，未知の行列$A，B，C，D$を推定することを目的とする．
+
+\section{マルコフパラメータについて}
+システム\eqref{state1}, \eqref{output1}において，入出力関係は
+\begin{equation*}
+    y_t = Du_t+ \sum_{i = 1}^{t-1}CA^{i-1}Bu_{t-i} + \sum_{i = 1}^{t-1}CA^{i-1}w_{t-i}
+\end{equation*}
+と表される．このときの入力の係数行列である$D, CB, CAB, CA^2B, \ldots$をシステムのマルコフパラメータと呼ぶ．
+
+
+
+また，システムの最初の$T$個のマルコフパラメータを並べた行列を
+\begin{equation}
+    G = 
+    \begin{bmatrix}
+        D & CB & CAB & \ldots & CA^{T-2}B
+    \end{bmatrix}
+    \in \mathbb{R}^{m \times pT}
+\end{equation}
+と定義し，この$G$の推定を目的とする．
+次の節では，この$G$の最小二乗推定の手順について説明する．
+
+\section{マルコフパラメータの最小二乗推定の手順}
+
+まず，推定手順を説明するために，データ収集の方法について説明する．
+今回，システムの入出力データを時間長$\bar{N}$まで取得する。このとき得られるデータセットは  
+\begin{equation*}
+    \{(y_t, u_t):t = 1, 2, \ldots,  \bar{N} \}
+\end{equation*}
+である．
+この与えられたデータセットから長さ$T$のセットを$N$個生成する．
+$\bar{N} = N + T - 1$である．
+ある時刻$t$において入力，ノイズを時間長$T$分並べたものを
+\begin{align}
+    \bar{u}_t &= 
+    \begin{bmatrix}
+        u_t^* & u_{t-1}^* & \ldots & u_{t-T+1}^*
+    \end{bmatrix}^*
+    \in \mathbb{R}^{pT}
+    \\
+    \bar{w}_t &= 
+    \begin{bmatrix}
+        w_t^* & w_{t-1}^* & \ldots & w_{t-T+1}^*
+    \end{bmatrix}^*
+    \in \mathbb{R}^{nT}
+\end{align}
+と表記する．
+$y_t$を$t-T+1$まで再帰的に展開すると，出力$y_t$と$\bar{u}_t$，$G$の関係は
+\begin{align}
+    y_t &= Cx_t + Du_t + z_t \notag \\
+        &= C(Ax_{t-1} + Bu_{t-1} + w_{t-1}) + Du_t + z_t \notag  \\
+        \label{u_y}
+        &= G\bar{u}_t + F\bar{w}_t + z_t + e_t 
+\end{align}
+となる．ここで,
+$F = 
+\begin{bmatrix}
+    0 & C & CA & \ldots & CA^{T-2}
+\end{bmatrix}\in \mathbb{R}^{m \times nT}$
+であり，
+$e_t = CA^{T-1}x_{t-T+1}$
+は，時刻$t-T+1$におけるシステムの状態の影響による誤差に相当する．
+この関係を用いて，$N$個の$(\bar{u}_t, y_t)_{t = T}^{\bar{N}}$を入出力データとして扱う．
+
+上の\eqref{u_y}式右辺の2項目以降をノイズとして最小二乗法を適用すると$G$の最小二乗推定値は，
+\begin{equation}
+\label{least_square}
+    \hat{G} = \underset{X \in \mathbb{R}^{m \times pT}}{\text{arg min}} \sum_{t = T}^{\bar{N}} \| y_t - X\bar{u}_t \|^2 
+\end{equation}
+と表せる．
+ただし，$\| \cdot \|$はスペクトルノルムを表す．
+また，
+\begin{align}
+    Y &=
+    \begin{bmatrix}
+        y_T & y_{T+1} & \ldots & y_{\bar{N}}
+    \end{bmatrix}^*\in \mathbb{R}^{N \times m}  \\
+    \label{U}
+    U &=
+    \begin{bmatrix}
+        \bar{u}_T & \bar{u}_{T+1} & \ldots & \bar{u}_{\bar{N}}
+    \end{bmatrix}^*\in \mathbb{R}^{N \times pT}
+\end{align}
+と定義すると，\eqref{least_square}式より，
+\begin{equation}
+    \hat{G} = \underset{X \in \mathbb{R}^{m \times pT}}{\text{min}}  \| Y - UX^* \|_F^2
+\end{equation}
+となる．なお，$\|\cdot\|_F$はフロベニウスノルムを表す．
+最小二乗解である$\hat{G}$は，
+\begin{equation}
+    \label{hatG}
+    \hat{G} = (U^{\dag}Y)^*
+\end{equation}
+と与えられる．
+ここで，$U^{\dag} = (U^*U)^{-1}U^*$は左疑似逆行列である．また，
+\begin{align}
+    \label{W_norm}
+    W &=
+    \begin{bmatrix}
+        \bar{w}_T & \bar{w}_{T+1} & \ldots & \bar{w}_{\bar{N}}
+    \end{bmatrix}^*\in \mathbb{R}^{N \times pT}\\
+    \label{E}
+    E &=
+    \begin{bmatrix}
+        e_T & e_{T+1} & \ldots & e_{\bar{N}}
+    \end{bmatrix}^*\in \mathbb{R}^{N \times m}\\
+    Z &=
+    \begin{bmatrix}
+        z_T & z_{T+1} & \ldots & z_{\bar{N}}
+    \end{bmatrix}^*\in \mathbb{R}^{N \times m}
+\end{align}
+と定義すると，システムの入出力関係を以下のように記述することができる.
+\begin{equation}
+    Y = UG^*+E + Z + WF^*
+\end{equation}
+$G$について解くと$G^* = U^{\dag}(Y - E - Z - WF^*) $となるため，
+(\ref{hatG})式より最小二乗推定値と真値の誤差は,
+\begin{equation}
+    \label{error}
+    (\hat{G} - G)^* = (U^*U)^{-1}U^*(E + Z +WF^*) 
+\end{equation}
+となる．
+
+\section{先行研究における推定精度}
+先行研究では入力を$\mathcal{N}(0, \sigma_u^2I_p)$に従い生成した場合について$G$の最小二乗推定
+を行っていた．
+この設定における最小二乗推定値$\hat{G}$と$G$の推定誤差のスペクトルノルムの上界を与えた定理を紹介する．
+\begin{thm}
+% \cite[Theorem3.2]{RHKB}
+\cite{RHKB}
+\label{thm_prev_error_bound}
+    $c, C >0$は十分大きな定数である．
+    $\rho(A) < 1$であり，$\frac{N}{\log^2{(Np)}} \geq cpT\log^2{(pT)}$であるとする．
+    $q = p+n$，$N_w = cTq\log^2{Tq}\log^2{Nq}$とする．このとき，高い確率でマルコフパラメータ行列$G$の最小二乗推定値$\hat{G}$について，
+    \begin{equation*}
+        \| \hat{G}-G \| \leq \frac{R_w\|F\| + R_z + R_e}{\sigma_u\sqrt{N}}
+    \end{equation*}
+    が成り立つ．ここで，
+    \begin{align*}
+        R_z &= 8\sigma_z \sqrt{Tp + m} \\
+        R_w &= \sigma_w (\sqrt{N_w} + N_w/\sqrt{N}) \\
+        R_e &= C\sigma_e \sqrt{ \left( 1+\frac{mT}{N(1-\rho(A)^{T/2})}  \right)(Tp + m) }
+    \end{align*}
+    である．また，
+    \begin{align*}
+        \Phi(A) &= \sup_{\tau \geq 0} \frac{\|A^{\tau}\|}{\rho(A)^{\tau/2}} \\
+        \Gamma_{\infty} &= \sum_{i = 0}^{\infty} \sigma_w^2A^i(A^*)^i + \sigma_uA^iBB^*(A^*)^i
+    \end{align*}
+    とすると，
+    \begin{equation*}
+        \sigma_e = \Phi(A)\|CA^{T-1}\|\sqrt{\frac{T\|\Gamma_{\infty}\|}{1-\rho(A)^T}}
+    \end{equation*}
+    である．
+\end{thm}
+
+この定理では，十分に大きな$N$において，サンプル数$N$に対して$\mathcal{O}(N^{-1/2})$で推定誤差の上界が減少することが示されている．
+さらに，最小二乗推定した$\hat{G}$を用いて出力の予測誤差を示している．
+
+\begin{sub}
+% \cite[lemma3.3]{RHKB}
+\cite{RHKB}
+\label{sub_estimate_y}
+    $G$の最小二乗推定値$\hat{G}$を用いて，観測出力$y_t$の推定値を
+    \begin{equation*}
+        \hat{y}_t = \hat{G}\bar{u}_t 
+    \end{equation*}
+    とする．このとき，
+    \begin{equation*}
+        \mathbb{E}[\|y_t-\hat{y}_t\|^2] \leq \sigma_w^2\|F\|_F^2 + \sigma_u^2\|G-\hat{G}\|_F^2 + m\sigma_z^2 + \|CA^{T-1}\|^2 \text{tr}(\Gamma_{\infty})
+    \end{equation*}
+    である．
+\end{sub}
+
+
+また，先行研究\cite{RHKB}において提案されている，行列$G$から元のシステムの行列$A, B, C, D$を実現するアルゴリズムを紹介する．
+\begin{algorithm}
+\caption{Ho-Kalman アルゴリズムによる状態空間実現}
+\label{alg:ho-kalman}
+\begin{algorithmic}[1]
+\Procedure{Ho-Kalman の最小実現}{}
+    \State \textbf{Inputs:} 長さ $T$，マルコフパラメータの最小二乗推定値 $\hat{G}$，システムの次数
+    % \hspace{2.5cm}  $n$，ハンケル行列のサイズ $(T_1, T_2 + 1)$，ただし $T_1 + T_2 + 1 = T$
+    \Statex \hspace{2.0cm}$n$，ハンケル行列のサイズ $(T_1, T_2 + 1)$，ただし $T_1 + T_2 + 1 = T$
+    \State \textbf{Outputs:} 状態空間実現 $\hat{A}, \hat{B}, \hat{C}$
+    \State ハンケル行列 $\hat{H} \in \mathbb{R}^{mT_1 \times pT_2}$ を $\hat{G}$ から生成
+    \State $\hat{H}_1 \gets \hat{H}$ の最初の $pT_2$ 列
+    \State $\hat{L} \gets \hat{H}_1$ のランク $n$ の近似行列
+    \State $U, \Sigma, V \gets \text{SVD}(\hat{L})$
+    \State $\hat{O} \gets U_{:, 1:n} \Sigma^{1/2}$
+    \State $\hat{Q} \gets \Sigma^{1/2} V_{:, 1:n}^*$
+    \State $\hat{C} \gets \hat{O}$ の最初の $m$ 行
+    \State $\hat{B} \gets \hat{Q}$ の最初の $p$ 列
+    \State $\hat{H}^{+} \gets \hat{H}$ の最後の $pT_2$ 列
+    \State $\hat{A} \gets \hat{O}^{\dagger} \hat{H}^{+} \hat{Q}^{\dagger}$
+    \State \Return $\hat{A} \in \mathbb{R}^{n \times n}, \hat{B} \in \mathbb{R}^{n \times p}, \hat{C} \in \mathbb{R}^{m \times n}$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+ブロック行列 $X = [X_1, X_2, \dots, X_T] \in \mathbb{R}^{m \times Tp}$ と，整数 $T_1, T_2$ （ただし $T_1 + T_2 \leq T$）が与えられたとき，
+ここで用いるハンケル行列は，$m \times p$ サイズのブロックを持つ $T_1 \times T_2$ のブロック行列として定義され，$(i, j)$ 番目のブロックは，
+\begin{equation*}
+    H[i, j] = X_{i+j}
+\end{equation*}
+である．
+
+また，ここから得られる行列の組$(\hat{A}, \hat{B}, \hat{C}, \hat{D})$の推定精度は，アルゴリズムの入力である$\hat{G}$の推定精度に依存しているため$G$をより厳密に推定することが目標となる．\cite{RHKB}

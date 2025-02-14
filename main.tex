@@ -1,0 +1,220 @@
+\documentclass[a4paper,12pt,oneside,openany]{jsbook}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{subfigure}
+\usepackage{amsmath,amssymb,latexsym,bm}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage[dvipdfmx]{color}
+\usepackage{appendix}
+\usepackage{titlesec}
+\usepackage{amsthm}
+% \usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\usepackage{amsfonts} % 数学記号用
+\renewcommand{\proofname}{\textbf{証明}}
+
+
+
+\newtheorem{thm}{定理}[chapter]
+\newtheorem{deff}{定義}[chapter]
+\newtheorem{sub}{補題}[chapter]
+\newtheorem{rem}{注意}[chapter]
+\newtheorem{ex}{例}[chapter]
+\newcommand{\argmax}{\mathop{\rm arg~max}\limits}
+
+
+\makeindex
+%%% 余白・文字数調整(左37mm, 右18mm, 上下共30mm, 文字数約40字/行, 行数約32行)
+\setlength{\textwidth}{150truemm}      % テキスト幅: 210-(30+30)=150mm
+%\setlength{\fullwidth}{\textwidth}     % ページ全体の幅
+\setlength{\oddsidemargin}{30truemm}   % 左余白
+\addtolength{\oddsidemargin}{-1truein} % 左位置デフォルトから-1inch
+\setlength{\topmargin}{30truemm}       % 上余白
+\setlength{\textheight}{210truemm}     % テキスト高さ: 297-(30+30)=237mm
+\addtolength{\topmargin}{-1truein}     % 上位置デフォルトから-1inch
+\makeatother
+%
+%% <local definitions/>
+
+
+% 本文の行数と桁数を指定出来るように
+\def\linesparpage#1{\baselineskip=\textheight
+   \divide\baselineskip by #1}
+\def\kcharparline#1{%
+   \ifx\xkanjiskip\undefined%
+   % NTT jTeX用
+   \jintercharskip 0mm plus 0.2mm minus 0.2mm
+   \else
+   % ASCII pTex用
+   \xkanjiskip 0mm plus 0.2mm minus 0.2mm
+   \fi
+   \settowidth{\textwidth}{あ}%
+   \multiply\textwidth by #1}
+%
+%
+{\large
+\begin{document}
+\kcharparline{40} % 一行を40字に
+%%% タイトル設定
+
+\begin{titlepage}
+\begin{center}
+	{\Large 卒業論文\\}
+	\vspace{ 5mm }
+	\baselineskip 35pt plus 1pt minus 1pt
+	{\bf {\huge マルコフパラメータ推定における \\物理制約下での入力設計}}
+	
+	\vspace{ 30mm }
+	{\LARGE 片岡 慎治 \\}
+	
+	\vspace{ 10mm }
+	{\large 大阪大学工学部 応用自然科学科\\}
+	{\large 応用物理学科目\\}
+	
+	\vspace{ 10mm }
+	{\large 指導教員\\}
+	{\large 和田 孝之　准教授 \\}
+	
+	\vspace{ 5mm }
+	\begin{figure}[h]
+	\centering
+	\includegraphics[width=20mm]{osaka_logo.pdf}\\
+	\end{figure}
+	\vspace{ 5mm }
+	{\large 令和 7年 2月 6日}
+\end{center}
+\end{titlepage}
+\thispagestyle{empty}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\frontmatter
+
+\tableofcontents
+
+\mainmatter
+% %
+% \include{chap1}
+\chapter{序論}
+
+\input{chapter/chapter1}
+
+\chapter{入力に制約がない場合のマルコフパラメータ推定}
+\input{chapter/chapter2}
+
+\chapter{入力に制約がある場合のマルコフパラメータ推定}
+\input{chapter/chapter3}
+
+\chapter{結論}
+\input{chapter/chapter4}
+
+\chapter*{謝辞}
+\addcontentsline{toc}{chapter}{謝辞}
+本研究は，著者が大阪大学工学部応用自然科学科応用物理学科目在学中に
+大阪大学大学院情報科学研究科情報数理学専攻計画数理学講座において行われたものである．
+末筆ながら，本研究を進めるにあたり，御多忙の中，細部にいたるまで御指導と御助言を賜りました
+本学准教授　和田孝之先生には深く感謝の意を表すと共に，
+厚く御礼を申し上げます．
+また，研究を行う上で，終始適切な御助言と御助力を賜りました本学教授　藤崎泰正先生，
+事務補佐員　桑原奈美氏には厚く御礼申し上げます．
+最後に，貴重な御意見を賜りました計画数理学講座内諸氏に御礼申し上げます．
+%
+
+% \bibliography{ref} 
+% \bibliographystyle{junsrt}
+
+\begin{thebibliography}{9}
+
+\bibitem{SSSS}
+足立: 
+システム同定の基礎, 東京電機大学出版局 (2009)
+
+\bibitem{SITF}
+L.~Ljung:
+\textit{System Identification Theory for the User},
+Prentice-Hall, inc. (1999)
+
+\bibitem{HDPA}
+R.~Vershynin:
+\textit{High-Dimensional Probability An Introduction with Applications in Data Science}, 
+Cambridge University Press (2018)
+
+\bibitem{HDSA}
+M.~J.~Wainwright:
+\textit{High-Dimensional Statistics: A Non-asymptotic Viewpoint}, 
+Cambridge University Press (2019)
+
+\bibitem{TEOS}
+T.~Hastie, R.~Tibshirani, and J.~Friedman: 
+\textit{The Elements of Statistical Learning},
+Springer New York (2009)
+
+\bibitem{SLTF}
+T.~Anastasios, Z.~Ingvar, M.~Nikolai, and G.~J.~Pappas:
+Statistical Learning Theory for Control: A Finite-Sample Perspective,
+\textit{IEEE Control Systems Magazine}
+\textbf{43}-6, 67/97 (2023)
+
+\bibitem{FTIIU}
+M.~K.~S.~Faradonbeh, A.~Tewari, and G.~Michailidis: 
+Finite time identification in unstable linear systems, 
+\textit{Automatica}, 
+\textbf{96}, 342/353 (2018)
+
+\bibitem{FTIOL}
+Y.~Jedra and A.~Proutiere: 
+Finite-Time Identification of Linear Systems: Fundamental Limits and Optimal Algorithms, 
+\textit{IEEE Transactions on Automatic Control}, 
+\textbf{68}-5, 2805/2820 (2023)
+
+\bibitem{OTSCO}
+S.~Dean, H.~Mania, N.~Matni, B.~Recht, and S.~Tu: 
+On the Sample Complexity of the Linear Quadratic Regulator, 
+\textit{Foundations of Computational Mathematics}, 
+\textbf{20}, 633/679 (2020)
+
+\bibitem{RHKB}
+S.~Oymak and N.~Ozay: 
+Revising Ho-Kalman-based System Identification: Robustness and Finite-Sample Analysis, 
+\textit{IEEE Transactions on Automatic Control}, 
+\textbf{67}-4, 1914/1928 (2022)
+
+\bibitem{NAIOL}
+Y.~Zheng and N.~Li: 
+Non-Asymptotic Identification of Linear Dynamical Systems Using Multiple Trajectories
+\textit{IEEE Control Systems Letters}, 
+\textbf{5}-5, 1683/1698 (2021)
+
+\bibitem{RAFA}
+R.~Tempo, G.~Calafiore, and F.~Dabbene:
+\textit{Randomized Algorithms for Analysis and Control of Uncertain Systems}, 
+Springer London (2005)
+
+\bibitem{ITTN}
+R.~Vershynin:
+\textit{Introduction to the non-asymptotic analysis of random matrices}, 
+Cambridge University Press (2012)
+
+\bibitem{AITM}
+J.~A.~Tropp:
+\textit{An Introduction to Matrix Concentration Inequalitues},
+Foundations and Trends in Machine Learning 
+% \textbf{8}-6, 1/230 
+(2015)
+
+\bibitem{IAJI}
+D.~J.~H.~Garling:
+\textit{Inequalities: A journey into Linear Analysis},
+Cambridge University Press (2010)
+
+\end{thebibliography}
+
+\clearpage
+
+\appendix
+\input{chapter/appendix}
+
+\end{document}
+}
